@@ -5,6 +5,7 @@ import (
 	"golang-restaurant-management/database"
 	"golang-restaurant-management/models"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -174,4 +175,13 @@ func UpdateFood() gin.HandlerFunc {
 
         c.JSON(http.StatusOK, gin.H{"message": "Food updated successfully"})
 	}
+}
+
+func round(num float64) int {
+	return int(num + math.Copysign(0.5, num))
+}
+
+func toFixed(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(round(num*output)) / output
 }
