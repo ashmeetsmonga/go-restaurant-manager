@@ -42,17 +42,31 @@ func GetOrderItems() gin.HandlerFunc {
 	}
 }
 
-func GetOrderItem() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		
-	}
-}
-
 func GetOrderItemsByOrder() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		
 	}
 }
+
+func GetOrderItem() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 100 * time.Second)
+		defer cancel()
+
+		var orderItem models.OrderItem
+		orderItemId := c.Param("order_item_id")
+
+		err := orderCollection.FindOne(ctx, bson.M{"order_item_id": orderItemId}).Decode(&orderItem)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to fetch order item"})
+			return
+		}
+
+		c.JSON(http.StatusOK, orderItem)
+	}
+}
+
+
 
 func CreateOrderItem() gin.HandlerFunc {
 	return func(c *gin.Context) {
