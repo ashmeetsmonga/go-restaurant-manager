@@ -119,7 +119,33 @@ func Register() gin.HandlerFunc {
 
 func Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		
+		ctx, cancel := context.WithTimeout(context.Background(), 100 * time.Second)
+		defer cancel()
+
+		var user models.User
+		var foundUser models.User
+
+		if err := c.BindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		err := userCollection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&foundUser)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Email not found"})
+			return
+		}
+
+		isValidPassword, msg := VerifyPassword(*user.Password, *foundUser.Password)
+		if !isValidPassword {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid password"})
+			return
+		}
+
+		token, refreshToken, _ = helper.GenerateAllTokens(*foundUser.Email, *foundUser.First_name, *foundUser.Last_name, foundUser.User_id)
+		helper.UpdateAllTokens(token, refreshToken, foundUser.User_id)
+
+		c.JSON(http.StatusOK, foundUser)
 	}
 }
 
