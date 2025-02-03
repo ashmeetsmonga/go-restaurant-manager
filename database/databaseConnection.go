@@ -7,11 +7,17 @@ import (
 	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func DBinstance() *mongo.Client {
+	err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
+		
 	MongoDb := os.Getenv("MONGO_URI")
 
 	fmt.Println("Connecting to MongoDB Atlas...")
@@ -21,7 +27,8 @@ func DBinstance() *mongo.Client {
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(MongoDb))
 	if err != nil {
-		log.Fatal("Error connecting to MongoDB Atlas:", err)
+
+		log.Fatal("Error connecting to MongoDB Atlas:", MongoDb, err)
 	}
 
 	err = client.Ping(ctx, nil)

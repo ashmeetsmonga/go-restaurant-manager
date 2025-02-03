@@ -1,21 +1,19 @@
 package main
 
 import (
-	"golang-restaurant-management/database"
+	"fmt"
 	"golang-restaurant-management/middleware"
 	"golang-restaurant-management/routes"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var foodCollection *mongo.Collection = database.OpenCollection(database.Client, "food")
 
 func main() {
 	port := os.Getenv("PORT")
-
 	if port == "" {
+		fmt.Println("Unable to load from env file")
 		port = "8080"
 	}
 
