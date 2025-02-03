@@ -136,13 +136,13 @@ func Login() gin.HandlerFunc {
 			return
 		}
 
-		isValidPassword, msg := VerifyPassword(*user.Password, *foundUser.Password)
+		isValidPassword := VerifyPassword(*user.Password, *foundUser.Password)
 		if !isValidPassword {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid password"})
 			return
 		}
 
-		token, refreshToken, _ = helper.GenerateAllTokens(*foundUser.Email, *foundUser.First_name, *foundUser.Last_name, foundUser.User_id)
+		token, refreshToken, _ := helper.GenerateAllTokens(*foundUser.Email, *foundUser.First_name, *foundUser.Last_name, foundUser.User_id)
 		helper.UpdateAllTokens(token, refreshToken, foundUser.User_id)
 
 		c.JSON(http.StatusOK, foundUser)
@@ -158,6 +158,11 @@ func HashPassword(password string) string {
 	return string(bytes)
 }
 
-func VerifyPassword(userPassword string, providedPassword string) (bool, string) {
+func VerifyPassword(userPassword string, providedPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(providedPassword), []byte(userPassword))
+	if err != nil {
+		return false
+	}
 
+	return true
 }
