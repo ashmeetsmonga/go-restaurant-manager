@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"golang-restaurant-management/database"
 	"golang-restaurant-management/models"
 	"log"
@@ -80,7 +79,7 @@ func CreateMenu() gin.HandlerFunc {
 
 		result, insertErr := menuCollection.InsertOne(ctx, menu)
 		if insertErr != nil {
-			msg := fmt.Sprintf("Menu item was not created")
+			msg := "Menu item was not created"
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}
@@ -89,7 +88,7 @@ func CreateMenu() gin.HandlerFunc {
 	}
 }
 
-func inTimeSpan(start, end, check time.Time) bool {
+func inTimeSpan(start, end, _ time.Time) bool {
 	return start.After(time.Now()) && end.After(start)
 }
 

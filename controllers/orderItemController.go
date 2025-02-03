@@ -200,7 +200,7 @@ func UpdateOrderItem() gin.HandlerFunc {
 		var updateObj primitive.D
 
 		if orderItem.Unit_price != nil {
-			updateObj = append(updateObj, bson.E{Key: "unit_price", Value: *&orderItem.Unit_price})
+			updateObj = append(updateObj, bson.E{Key: "unit_price", Value: *orderItem.Unit_price})
 		}
 
 		if orderItem.Quantity != nil {

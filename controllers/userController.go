@@ -160,9 +160,7 @@ func HashPassword(password string) string {
 
 func VerifyPassword(userPassword string, providedPassword string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(providedPassword), []byte(userPassword))
-	if err != nil {
-		return false
-	}
+	
+	return err == nil
 
-	return true
 }

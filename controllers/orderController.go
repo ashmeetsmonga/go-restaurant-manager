@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"golang-restaurant-management/database"
 	"golang-restaurant-management/models"
 	"log"
@@ -73,7 +72,7 @@ func CreateOrder() gin.HandlerFunc {
 		if order.Table_id != nil {
 			err := tableCollection.FindOne(ctx, bson.M{"table_id": order.Table_id}).Decode(&table)
 			if err != nil {
-				msg := fmt.Sprintf("message:Table was not found")
+				msg := "message:Table was not found"
 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 				return
 			}
@@ -88,7 +87,7 @@ func CreateOrder() gin.HandlerFunc {
 		result, insertErr := orderCollection.InsertOne(ctx, order)
 
 		if insertErr != nil {
-			msg := fmt.Sprintf("order item was not created")
+			msg := "order item was not created"
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}
@@ -116,7 +115,7 @@ func UpdateOrder() gin.HandlerFunc {
 		if order.Table_id != nil {
 			err := menuCollection.FindOne(ctx, bson.M{"tabled_id": order.Table_id}).Decode(&table)
 			if err != nil {
-				msg := fmt.Sprintf("message:Menu was not found")
+				msg := "message:Menu was not found"
 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 				return
 			}
@@ -143,7 +142,7 @@ func UpdateOrder() gin.HandlerFunc {
 		)
 
 		if err != nil {
-			msg := fmt.Sprintf("order item update failed")
+			msg := "order item update failed"
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}

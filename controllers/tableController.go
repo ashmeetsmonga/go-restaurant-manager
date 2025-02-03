@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"golang-restaurant-management/database"
 	"golang-restaurant-management/models"
 	"log"
@@ -54,7 +53,7 @@ func GetTable() gin.HandlerFunc {
 func CreateTable() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-
+		defer cancel()
 		var table models.Table
 
 		if err := c.BindJSON(&table); err != nil {
@@ -78,7 +77,7 @@ func CreateTable() gin.HandlerFunc {
 		result, insertErr := tableCollection.InsertOne(ctx, table)
 
 		if insertErr != nil {
-			msg := fmt.Sprintf("Table item was not created")
+			msg := "Table item was not created"
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}
@@ -92,6 +91,7 @@ func CreateTable() gin.HandlerFunc {
 func UpdateTable() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
 
 		var table models.Table
 
@@ -131,7 +131,7 @@ func UpdateTable() gin.HandlerFunc {
 		)
 
 		if err != nil {
-			msg := fmt.Sprintf("table item update failed")
+			msg := "table item update failed"
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}
